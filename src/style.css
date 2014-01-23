@@ -1,0 +1,54 @@
+h1,h2,p,div {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+}
+
+.sprite_image_container {
+    width: 64px;
+    height: 64px;
+    float: left;
+}
+
+.sprite_image {
+    max-width: 64px;
+    max-height: 64px;
+    border: 0px;
+}
+
+h1 {
+    font-size: 32px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#search {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px dotted black;
+}
+
+#sbar {
+    width: 300px;
+}
+
+.result {
+    padding: 8px;
+    margin: 8px;
+    border: 1px solid #cccccc;
+    overflow: hidden;
+    border-radius: 3px;
+    background-color: #f0f0f0;
+}
+
+strong {
+    font-weight: bold;
+}
+
+.info {
+    width: 190px;
+    float: left;
+}
+
+.string {
+    margin-left: 200px;
+}

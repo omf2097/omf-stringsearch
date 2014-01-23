@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <title>String search</title>
+    <meta name="viewport" content="initial-scale=1.0" />
+    
+    <!-- fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    
+    <!-- styles -->
+    <link rel="stylesheet" type="text/css" href="reset.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <!-- scripts -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <script type="text/javascript">
+    $(function() {
+
+    var timer = setTimeout(search, 99999999999);
+
+    function search() {
+        $.getJSON(
+            'query.php',
+            {param: $('#sbar').val()},
+            function(data) {
+                $('#results').html('');
+                $.each(data, function(i, item) {
+                    var astr = item['str'];
+                    var q = $('#sbar').val();
+                    astr = astr.replace(q,"<strong>"+q+"</strong>");
+                    var filename = item['filename'].substring(0, item['filename'].indexOf('.')).toLowerCase();
+                    
+                    $('#results').append(' \
+                        <div class="result"> \
+                            <div class="info"> \
+                                <a href="../cards/'+filename+'.html">'+item['filename']+'</a><br /> \
+                                Animation: '+item['anim_id']+'<br /> \
+                                Type: '+item['type']+' \
+                            </div> \
+                            <div class="sprite_image_container"> \
+                                <img src="../cards/'+filename+'_sprite_'+item['anim_id']+'_0.png" class="sprite_image" alt="sprite" /> \
+                            </div> \
+                            <div class="string">'+astr+'</dív> \
+                        </div>');
+                });
+            }
+        );
+    }
+
+    $('#sbar').on('input', function() {
+        $('#results').html('');
+        window.clearTimeout(timer);
+        timer = setTimeout(search, 250);
+    });
+
+    });
+    </script>
+</head>
+<body>
+<h1>OMF:2097 String Search</h1>
+<div id="search">
+    <input type="text" id="sbar">
+</div>
+<div id="results">
+
+</div>
+</body>
+</html>
