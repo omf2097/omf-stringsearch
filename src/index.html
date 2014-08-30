@@ -28,7 +28,6 @@
                 $.each(data, function(i, item) {
                     var astr = item['str'];
                     var q = $('#sbar').val();
-                    astr = astr.replace(q,"<strong>"+q+"</strong>");
                     var filename = item['filename'].substring(0, item['filename'].indexOf('.')).toLowerCase();
                     
                     $('#results').append(' \
