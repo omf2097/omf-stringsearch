@@ -19,7 +19,7 @@ if(isset($_GET['param'])) {
         WHERE
             strings.file_id = files.id AND
             tags.string_id = strings.id AND
-            tags.key LIKE ?");
+            tags.tag LIKE ?");
     $s = "%".$_GET['param']."%";
     $q->bindValue(1, $s, PDO::PARAM_STR);
     $q->execute();
