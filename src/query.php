@@ -17,7 +17,7 @@ if(isset($_GET['param'])) {
         FROM 
             strings,files
         WHERE
-            strings.file = files.id AND 
+            strings.file_id = files.id AND 
             strings.str LIKE ?");
     $s = "%".$_GET['param']."%";
     $q->bindValue(1, $s, PDO::PARAM_STR);
