@@ -52,3 +52,66 @@ strong {
 .string {
     margin-left: 200px;
 }
+
+a.known {
+    color: green;
+}
+
+a.unknown {
+    color: red;
+}
+
+a.unknown:hover,
+a.known:hover,
+a.invalid:hover {
+    background-color: black;
+}
+
+a.key {
+    font-weight: bold;
+}
+
+a.invalid {
+    color: gray;
+}
+
+a {
+    text-decoration: none;
+}
+
+a.tooltip{
+    position:relative;
+}
+a.tooltip::before {
+    content: attr(data-tooltip) ;
+    font-size: 12px;
+    position:absolute;
+    z-index: 999;
+    white-space:nowrap;
+    bottom:9999px;
+    left: 0;
+    background:#000;
+    color:#e0e0e0;
+    padding:0px 7px;
+    line-height: 24px;
+    height: 24px;
+    opacity: 0;
+}
+a.tooltip:hover::before {
+    opacity: 1;
+    top:22px;
+}
+a.tooltip:hover::after {
+    content: "";
+    opacity: 1;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid black;
+    z-index: 999;
+    position:absolute;
+    white-space:nowrap;
+    top:17px;
+    left: 0px;
+}

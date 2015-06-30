@@ -3,10 +3,10 @@
     <meta charset="utf-8" />
     <title>String search</title>
     <meta name="viewport" content="initial-scale=1.0" />
-    
+
     <!-- fonts -->
     <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
-    
+
     <!-- styles -->
     <link rel="stylesheet" type="text/css" href="reset.css" />
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -18,6 +18,133 @@
     $(function() {
 
     var timer = setTimeout(search, 99999999999);
+    var tag_data = null;
+
+    $.getJSON("taglist.json", function(data) {
+        tag_data = data;
+    });
+
+    function asc(ch) { return ch.charCodeAt(0); }
+    function chr(n) { return String.fromCharCode(n); }
+
+    function find_tag(p_tag) {
+        var ret = null;
+        $.each(tag_data, function(index, key) {
+            if(key[0] == p_tag) {
+                ret = key;
+            }
+        });
+        return ret;
+    }
+
+    function find_int(str, start) {
+        var f = "";
+        for(var i = start; i < str.length; i++) {
+            if(asc(str[i]) >= asc('0') && asc(str[i]) <= asc('9')) {
+                f += str[i];
+            } else if(i == start) {
+                if(str[i] == '-' || str[i] == '+') {
+                    f += str[i];
+                } else {
+                    return f;
+                }
+            } else {
+                return f;
+            }
+        }
+        return f;
+    }
+
+    function output_valid(v, value, lookup_tag) {
+        // Set correct classes
+        var out = "";
+        out += '<a href="#" class="tooltip ';
+        out += (v[0] == lookup_tag) ? "key " : " ";
+        out += (v[2].length > 0) ? "known " : "unknown ";
+        out += '" ';
+        out += (v[2].length > 0) ? 'data-tooltip="'+v[0].toUpperCase()+': '+v[2]+'"' : 'data-tooltip="Unknown"';
+        out += ">";
+        out += v[0];
+        out += value;
+        out += '</a>';
+        return out;
+    }
+
+    function output_invalid(tag) {
+        return '<a href="#" class="invalid tooltip" data-tooltip="'+tag.toUpperCase()+': Invalid tag">'+tag+"</a>";
+    }
+
+    function output_descriptor(desc, val, has_dash) {
+        var out = "";
+        out += desc;
+        out += val;
+        if(has_dash) {
+            out += "-";
+        }
+        return out;
+    }
+
+    function str_decorate(str, lookup_tag, has_dash) {
+        var out = "";
+        var prev = -1;
+        for(var i = 0; i < str.length;) {
+            if(prev == i) {
+                console.log("text="+str[i]+" at="+i);
+                console.log("full="+str);
+                console.log("sub="+str.substring(i, str.length));
+                console.error("WTF!")
+                i++;
+            }
+            prev = i;
+
+            if(asc(str[i]) <= asc('Z') && asc(str[i]) >= asc('A')) {
+                // Find  descriptor and tick length
+                var desc = str[i];
+                var val = find_int(str, i+1);
+                i += val.length + 1;
+
+                // See if we need to print the descriptor separator dash
+                var has_dash = (i < str.length && str[i] == '-');
+                if(has_dash) {
+                    i++;
+                }
+
+                // Print output
+                out += output_descriptor(desc, val, has_dash);
+            }
+            else if(asc(str[i]) <= asc('z') && asc(str[i]) >= asc('a')) {
+                var found = false;
+                for(var k = 3; k > 0 && !found; k--) {
+                    var tag = str.substring(i, i+k);
+                    var v = find_tag(tag);
+                    var value = "";
+                    if(v != null) {
+                        // Just dump out the tag info
+                        if(v[1] == 1) {
+                            value = find_int(str, i+k)
+                            i += value.length;
+                        }
+
+                        // Output
+                        out += output_valid(v, value, lookup_tag);
+                        i += k;
+                        found = true;
+                    }
+                }
+                if(!found) {
+                    // Invalid tags
+                    if(str[i] == "u") { out += output_invalid(str[i]); }
+                    if(str[i] == "c") { out += output_invalid(str[i]); }
+                    if(str[i] == "p") { out += output_invalid(str[i]); }
+                    if(str[i] == "o") { out += output_invalid(str[i]); }
+                    if(str[i] == "z") { out += output_invalid(str[i]); }
+
+                    i++;
+                }
+            }
+        }
+        return out;
+    }
 
     function search() {
         $.getJSON(
@@ -26,10 +153,10 @@
             function(data) {
                 $('#results').html('');
                 $.each(data, function(i, item) {
-                    var astr = item['str'];
+                    var astr = str_decorate(item['str'], $('#sbar').val());
                     var q = $('#sbar').val();
                     var filename = item['filename'].substring(0, item['filename'].indexOf('.')).toLowerCase();
-                    
+
                     $('#results').append(' \
                         <div class="result"> \
                             <div class="info"> \
