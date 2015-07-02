@@ -8,7 +8,7 @@ if(isset($_GET['param'])) {
     //$db->query("PRAGMA case_sensitive_like = ON");
 
     $q = $db->prepare("
-        SELECT
+        SELECT DISTINCT
             strings.str,
             strings.anim_id,
             strings.type,
@@ -20,7 +20,7 @@ if(isset($_GET['param'])) {
             strings.file_id = files.id AND
             tags.string_id = strings.id AND
             tags.tag = ?");
-    $s = $_GET['param'];
+    $s = strtolower($_GET['param']);
     $q->bindValue(1, $s, PDO::PARAM_STR);
     $q->setFetchMode(PDO::FETCH_ASSOC);
     $q->execute();
